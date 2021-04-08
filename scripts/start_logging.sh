@@ -27,12 +27,18 @@ pipe_pane_sed() {
 	tmux pipe-pane "exec cat - | sed -r 's/$ansi_codes//g' >> $FILE"
 }
 
+pipe_raw() {
+        tmux pipe-pane "exec cat - >> $FILE"
+}
+
 start_pipe_pane() {
 	if ansifilter_installed; then
 		pipe_pane_ansifilter
 	elif system_osx; then
 		# OSX uses sed '-E' flag and a slightly different regex
 		pipe_pane_sed_osx
+	elif [ -z "$log_ansi" ]
+		pipe_raw
 	else
 		pipe_pane_sed
 	fi
